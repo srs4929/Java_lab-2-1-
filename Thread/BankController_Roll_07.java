@@ -28,6 +28,138 @@ class account extends Exception{ //more withdraw than account money
     }
 }
 
+//exception creation ends
+
+//creating a bank class
+
+class Bank{
+
+    String name;
+    int balance;
+    int id;
+
+    Bank [] customer=new Bank[100];
+
+    int count=0;
+    Bank(String name,int balance,int id)
+    {
+        this.name=name;
+        this.balance=balance;
+        this.id=id;
+    }
+
+    //method to deposit money
+
+    synchronized void Deposit(int amount) throws deposit{
+
+        if(amount<=0) throw new deposit("Invalid deposit amount");
+        balance+=amount;
+        System.out.println("Deposited " + amount + " to account " + id);
+    }
+
+    //method to withdraw money
+    synchronized void Withdraw(int amount) throws withdraw, account {
+        if (amount <= 0) {
+            throw new withdraw("Invalid withdraw amount.");
+        }
+        if (amount > balance) {
+            throw new account("Insufficient balance.");
+        }
+        balance -= amount;
+        System.out.println("Withdrew " + amount + " from account " + id);
+    }
+
+     // Add customer to the bank
+     static synchronized void addCustomer(Bank customer) {
+        if (count < 100) {
+            customer[count++] = customer;
+            System.out.println("Customer added: " + customer.name + " with ID " + customer.id);
+        } else {
+            System.out.println("Bank customer limit reached.");
+        }
+    }
+
+    // Get customer by ID
+    static synchronized Bank getCustomer(int id) {
+        for (int i = 0; i < count; i++) {
+            if (customer[i].id == id) {
+                return customer[i];
+            }
+        }
+        return null;  // If customer doesn't exist
+    }
+    
+}
+
+//creating Customercreating thread
+
+class CreateCustomer extends Thread{
+
+    String name;
+    int id;
+
+    CreateCustomer(String name,int id)
+    {
+        this.name=name;
+        this.id=id;
+       
+    }
+    public void run()
+    {   
+        Bank c=new Bank(name,5000,id); // creating new customer and adding it to bank class;
+        Bank.addCustomer(c);
+        System.out.println("Customer name :"+name+" with id "+ id+"is created");
+    }
+}
+
+//creating a deposit thread
+
+class Depositthread extends Thread{
+
+    Bank customer;
+    int amount;
+
+    Depositthread(Bank customer, int amount)
+    {
+        this.customer=customer;
+        this.amount=amount;
+    }
+
+    public void run()
+    {
+        try{
+
+            customer.Deposit(amount); //amount is passed to Deposit method
+        }
+        catch(deposit e)
+        {
+            System.out.println(e.getMessage());
+        }
+    }
+} 
+
+// Creating a WithdrawThread
+class WithdrawThread extends Thread {
+    Bank customer;
+    int amount;
+
+    WithdrawThread(Bank customer, int amount) {
+        this.customer = customer;
+        this.amount = amount;
+    }
+
+    
+    public void run() {
+        try {
+            customer.Withdraw(amount);
+        } catch (withdraw | account e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+
+
+
 class Generator extends Thread{
     int totalNumofTrans; 
     Random random = new Random(); 
