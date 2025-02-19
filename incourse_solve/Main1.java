@@ -4,7 +4,7 @@
 //method overloading-compile time
 //method overiding -run time 
 
-//overloading - allows different methods to have same name but different paraeters
+//overloading - allows different methods to have same name but different parameters
 
 class Demo //method overloading
 {
