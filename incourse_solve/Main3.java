@@ -4,7 +4,7 @@ public interface A
 {
     public void printA();  //printA() method need to be implemented
 }
-class Simple extends A{ // it should  be implements. Class does not extend interface it implements  
+class Simple extends A{ // it should  be implemented. Class does not extend interface it implements  
 
     int x=10;
     static void access()
